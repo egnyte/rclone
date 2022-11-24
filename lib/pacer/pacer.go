@@ -2,6 +2,7 @@
 package pacer
 
 import (
+	"math/rand"
 	"sync"
 	"time"
 
@@ -261,4 +262,66 @@ func IsRetryAfter(err error) (retryAfter time.Duration, isRetryAfter bool) {
 		return false
 	})
 	return
+}
+
+// / EgnyteCloudDrive is a specialized pacer for Egnyte Drive
+//
+// It implements a truncated exponential backoff strategy with randomization.
+// Normally operations are paced at the interval set with SetMinSleep. On errors
+// the sleep timer is set to 0..2**retries seconds.
+type EgnyteCloudDrive struct {
+	minSleep time.Duration // minimum sleep time
+}
+
+// EgnyteCloudDriveOption is the interface implemented by all options for the EgnyteCloudDrive Calculator
+type EgnyteCloudDriveOption interface {
+	ApplyEgnyteCloudDrive(*EgnyteCloudDrive)
+}
+
+// NewEgnyteCloudDrive returns a new EgnyteCloudDrive Calculator with default values
+func NewEgnyteCloudDrive(opts ...EgnyteCloudDriveOption) *EgnyteCloudDrive {
+	c := &EgnyteCloudDrive{
+		minSleep: 10 * time.Millisecond,
+	}
+	c.Update(opts...)
+	return c
+}
+
+// Update applies the Calculator options.
+func (c *EgnyteCloudDrive) Update(opts ...EgnyteCloudDriveOption) {
+	for _, opt := range opts {
+		opt.ApplyEgnyteCloudDrive(c)
+	}
+}
+
+// ApplyEgnyteCloudDrive updates the value on the Calculator
+func (o MinSleep) ApplyEgnyteCloudDrive(c *EgnyteCloudDrive) {
+	c.minSleep = time.Duration(o)
+}
+
+// Calculate takes the current Pacer state and return the wait time until the next try.
+func (c *EgnyteCloudDrive) Calculate(state State) time.Duration {
+	if t, ok := IsRetryAfter(state.LastError); ok {
+		if t < c.minSleep {
+			return c.minSleep
+		}
+		return t
+	}
+
+	consecutiveRetries := state.ConsecutiveRetries
+	if consecutiveRetries == 0 {
+		return c.minSleep
+	}
+	if consecutiveRetries > 9 {
+		consecutiveRetries = 9
+	}
+	// consecutiveRetries starts at 1 so
+	// maxSleep is 2**(consecutiveRetries-1) seconds
+	maxSleep := time.Second << uint(consecutiveRetries-1)
+	// actual sleep is random from 0..maxSleep
+	sleepTime := time.Duration(rand.Int63n(int64(maxSleep)))
+	if sleepTime < c.minSleep {
+		sleepTime = c.minSleep
+	}
+	return sleepTime
 }

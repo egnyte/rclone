@@ -23,6 +23,7 @@ require (
 	github.com/coreos/go-systemd v0.0.0-20191104093116-d3cd4ed1dbcf
 	github.com/dop251/scsu v0.0.0-20220106150536-84ac88021d00
 	github.com/dropbox/dropbox-sdk-go-unofficial/v6 v6.0.5
+	github.com/egnyte/egnyte-go-sdk v0.1.2
 	github.com/gabriel-vasile/mimetype v1.4.1
 	github.com/gdamore/tcell/v2 v2.5.3
 	github.com/go-chi/chi/v5 v5.0.7
@@ -42,6 +43,7 @@ require (
 	github.com/ncw/swift/v2 v2.0.1
 	github.com/oracle/oci-go-sdk/v65 v65.26.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v1.13.5
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/prometheus/client_golang v1.14.0
@@ -98,6 +100,7 @@ require (
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
+	github.com/homelight/json v1.18.5 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/jcmturner/aescts/v2 v2.0.0 // indirect
 	github.com/jcmturner/dnsutils/v2 v2.0.0 // indirect
