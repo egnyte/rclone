@@ -1,0 +1,43 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+    
+    - name: make dir
+      run:  mkdir downloads
+      
+    - name: Build for linux
+      run: env GOOS=linux   GOARCH=amd64 go build -o downloads/rclone_linux
+      
+    - name: Build for windows
+      run: env GOOS=windows GOARCH=amd64 go build -o downloads/rclone.exe
+    
+    - name: Build for osx
+      run: env GOOS=darwin  GOARCH=amd64 go build -o downloads/rclone_osx
+      
+    - name:  Use the Upload Artifact GitHub Action
+      uses: actions/upload-artifact@v2
+      with: 
+          name: rclone-binary-for-download
+          path: downloads
+      
+
+
