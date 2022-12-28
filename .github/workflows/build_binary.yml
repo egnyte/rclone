@@ -25,19 +25,19 @@ jobs:
       run:  mkdir downloads
       
     - name: Build for linux
-      run: env GOOS=linux   GOARCH=amd64 go build -o downloads/egnyte_connector
+      run: env GOOS=linux   GOARCH=amd64 go build -o downloads/egnyte_connector_linux
       
     - name: Build for linux arm64
-      run: env GOOS=linux   GOARCH=arm64 go build -o downloads/egnyte_connector_arm64
+      run: env GOOS=linux   GOARCH=arm64 go build -o downloads/egnyte_connector_linux_arm64
       
     - name: Build for windows
       run: env GOOS=windows GOARCH=amd64 go build -o downloads/egnyte_connector.exe
     
     - name: Build for osx
-      run: env GOOS=darwin  GOARCH=amd64 go build -o downloads/egnyte_connector
+      run: env GOOS=darwin  GOARCH=amd64 go build -o downloads/egnyte_connector_osx
      
     - name: Build for osx arm64
-      run: env GOOS=darwin  GOARCH=arm64 go build -o downloads/egnyte_connector_arm64
+      run: env GOOS=darwin  GOARCH=arm64 go build -o downloads/egnyte_connector__osx_arm64
       
     - name:  Use the Upload Artifact GitHub Action
       uses: actions/upload-artifact@v2
